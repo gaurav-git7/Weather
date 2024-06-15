@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/home.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="dark-mode"> 
+    <div class="container">
+        <button id="theme-switcher" class="fixed-button">Switch Theme</button>
+
+        <h1>Gaurav`s Weather Services</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_name">City:</label>
+            <input type="text" name="name" id="id_name" maxlength="100">
+            <br></br>
+            <label for="id_country">Country Code (optional):</label>
+            <input type="text" name="country" id="id_country" maxlength="2">
+            <br></br>
+            <button type="submit">Search City</button>
+        </form>
+        <div class="weather-container">
+            
+            {% if weather_data %}
+                <h2>Weather</h2>
+                <div class="weather-details">
+                    <div class="left-column">
+                        <h2>{{ weather_data.city }}</h2>
+                        {% if local_time %}
+                            <p>Current date and time in {{ weather_data.city }}: <span style="font-weight: bold;color:orange;">{{ local_time }}</span></p>
+                        {% endif %}
+                        <p>Temperature: {{ weather_data.temperature }}°C</p>
+                        <p>Min/Max Temperature: {{ weather_data.temp_min }}°C / {{ weather_data.temp_max }}°C</p>
+                        <p>Description: {{ weather_data.description }}</p>
+                    </div>
+                    <div class="right-column">
+                        <img src="http://openweathermap.org/img/wn/{{ weather_data.icon }}.png" alt="weather icon">
+                        <p>Humidity: {{ weather_data.humidity }}%</p>
+                        <p>Pressure: {{ weather_data.pressure }} hPa</p>
+                        <p>Wind Speed: {{ weather_data.speed }} m/s</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="forecast-container">
+            {% if forecast_data %}
+                <h2>Forecast</h2>
+                <ul class="forecast-list">
+                    {% for forecast in forecast_data %}
+                        <li class="forecast-item">
+                            <div class="forecast-details">
+                                <div class="left-column">
+                                    <p>Date and Time: <span sytle="font-weight: bold; color:orange;">{{ forecast.datetime }}</span ></p>
+                                    <p>Temperature: {{ forecast.temperature }}°C</p>
+                                    <p>Min/Max Temperature: {{ forecast.temp_min }}°C / {{ forecast.temp_max }}°C</p>
+                                    <p>Description: {{ forecast.description }}</p>
+                                </div>
+                                <div class="right-column">
+                                    <img src="http://openweathermap.org/img/wn/{{ forecast.icon }}.png" alt="weather icon">
+                                    
+                                    <p>Humidity: {{ forecast.humidity }}%</p>
+                                    <p>Pressure: {{ forecast.pressure }} hPa</p>
+                                    <p>Wind Speed: {{ forecast.speed }} m/s</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+            {% endif %}
+        </div>
+    </div>
+    <script src="{% static 'JS/theme-switcher.js' %}"></script> 
+</body>
+</html>
